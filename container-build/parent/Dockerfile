@@ -5,6 +5,7 @@ FROM registry.access.redhat.com/ubi8/ubi:8.0
 # DocumentRoot for Apache
 ENV DOCROOT=/var/www/html 
 
+ADD ./scripts ~/h/scripts
 ADD ./scripts ./scripts
 RUN   yum install -y --nodocs --disableplugin=subscription-manager httpd && \
       yum clean all --disableplugin=subscription-manager -y && \
@@ -18,9 +19,9 @@ ONBUILD COPY src/ ${DOCROOT}/
 EXPOSE 80
 
 # This stuff is needed to ensure a clean start
-
+RUN rm -rf /run/httpd && mkdir /run/httpd
 # Run as the root user
-# USER root
+USER root
 
 # Launch httpd
 CMD sh scripts/run-script.sh
